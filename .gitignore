@@ -3,9 +3,6 @@
 
 # Ignore vscode files
 .vscode
-# Ignore compiled code
-Pt1
-Pt2
 
 # Compiled Object files
 *.slo
