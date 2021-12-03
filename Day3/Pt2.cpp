@@ -5,20 +5,6 @@
 #include <iostream>
 using namespace std;
 
-
-class Tuple 
-{
-    public:
-        int first;
-        int second;
-
-        Tuple(int firstValue, int secondValue)
-        {
-            this->first = firstValue;
-            this->second = secondValue;
-        }
-};
-
 // Square and multiply algorithm for fast exponentiation
 unsigned int Square_And_Multiply(int base, int exponent)
 {
@@ -41,6 +27,37 @@ unsigned int Square_And_Multiply(int base, int exponent)
         }
     }
     return z;
+}
+
+// Count the bits from the passed vector
+void Count_Bits(vector<string> bitStrings, int *oneCount, int *zeroCount, int bitStringSize)
+{
+    // Reset the bit counts
+    for(int i = 0; i < bitStringSize; i++)
+    {
+        oneCount[i] = 0;
+        zeroCount[i] = 0;
+    }
+    // Loop over each string and count its bits
+    for(int j = 0; j < bitStringSize; j++)
+    {
+        for(size_t i = 0; i < bitStrings.size(); i++)
+        {
+            switch (bitStrings[i][j])
+            {
+                case '1':
+                    oneCount[j]++;
+                    break;
+                case '0':
+                    zeroCount[j]++;
+                    break;
+                default:
+                    cout << "Error counting bits." << endl;
+                    return;
+            }
+        }
+    }
+    return;
 }
 
 int main(int argc, char** argv)
@@ -95,26 +112,16 @@ int main(int argc, char** argv)
         }
         bitStrings.push_back(line);
     }
+
+    // Vectors to keep track of valid options for both oxygen and co2
     vector<string> validOxygen = vector<string>();
-    vector<Tuple> validOxygenBits = vector<Tuple>();
-    for(int i = 0; i < bitStringSize; i++)
-    {
-        validOxygenBits.push_back(Tuple(0, 0));
-    }
     vector<string> validCO2 = vector<string>();
-    vector<Tuple> validCO2Bits = vector<Tuple>();
-    for(int i = 0; i < bitStringSize; i++)
-    {
-        validCO2Bits.push_back(Tuple(0, 0));
-    }
     
-    // Check if there are more ones than zeros in the MSB
-    bool test = oneCount[0] >= zeroCount[0];
-    // Initialize the vectors.
-    int index = 0;
+    // Initialize the valid options for both
+    bool testCondition = oneCount[0] >= zeroCount[0];
     for(auto bitString : bitStrings)
     {
-        if((bitString[0]=='1') == test)
+        if((bitString[0]=='1') == testCondition)
         {
             validOxygen.push_back(bitString);
         }
@@ -123,48 +130,62 @@ int main(int argc, char** argv)
             validCO2.push_back(bitString);
         }
     }
-    char mostCommonBit;
-    for(int i = 1; i < bitStringSize; i++)
+    
+    // Loop over the valid options and remove those who do not meet the criteria
+    while(validOxygen.size() != 1)
     {
-        if(oneCount[i] >= zeroCount[i])
+        // Loop over every bit
+        for(int i = 1; i < bitStringSize; i++)
         {
-            mostCommonBit = '1';
-        }
-        else
-        {
-            mostCommonBit = '0';
-        }
-        for(int j = 0; j < validOxygen.size(); j++)
-        {
-            // Break when there is only one left
+            // Get most common bits for oxygen
+            Count_Bits(validOxygen, oneCount, zeroCount, bitStringSize);
+            // Loop over every bit string
+            for(size_t j = 0; j < validOxygen.size(); j++)
+            {
+                // If there is only one left break
+                if(validOxygen.size() == 1)
+                {
+                    break;
+                }
+                if((validOxygen[j][i] == '1') != (oneCount[i] >= zeroCount[i]))
+                {
+                    validOxygen.erase(validOxygen.begin() + j);
+                    j--;
+                }
+            }
             if(validOxygen.size() == 1)
             {
                 break;
             }
-            if(validOxygen[j][i] != mostCommonBit)
-            {
-                validOxygen.erase(validOxygen.begin() + j);
-                j--;
-            }
         }
-        for(int j = 0; j < validCO2.size(); j++)
+    }
+    while(validCO2.size() != 1)
+    {
+        // Loop over every bit
+        for(int i = 1; i < bitStringSize; i++)
         {
-            // Break when there is only one left.
+            // Get most common bits for co2
+            Count_Bits(validCO2, oneCount, zeroCount, bitStringSize);
+            // Loop over every bit string
+            for(size_t j = 0; j < validCO2.size(); j++)
+            {
+                if(validCO2.size() == 1)
+                {
+                    break;
+                }
+                if((validCO2[j][i] == '1') == (oneCount[i] >= zeroCount[i]))
+                {
+                    validCO2.erase(validCO2.begin() + j);
+                    j--;
+                }
+            }
             if(validCO2.size() == 1)
             {
                 break;
             }
-            if(validCO2[j][i] == mostCommonBit)
-            {
-                validCO2.erase(validCO2.begin() + j);
-                j--;
-            }
-        }
-        if(validCO2.size() == 1 && validOxygen.size() == 1)
-        {
-            break;
         }
     }
+    // Convert the bit strings to decimal
     unsigned int oxygenRating;
     unsigned int co2Rating;
     for(int i = bitStringSize-1; i > -1; i--)
@@ -178,6 +199,7 @@ int main(int argc, char** argv)
             co2Rating += Square_And_Multiply(2, (bitStringSize-1)-i);
         }
     }
+    // Return answer
     cout << oxygenRating * co2Rating << endl;
     return 0;
 }
