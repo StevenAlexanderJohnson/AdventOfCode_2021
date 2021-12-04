@@ -29,11 +29,11 @@ class BingoBoard
             bool breakValue = false;
             // Define the iterators here so that we can use them after
             // the loops are done.
-            int i = 0, j = 0;
+            size_t i, j;
             // Find number in board
-            for(i; i < this->board.size(); i++)
+            for(i = 0; i < this->board.size(); i++)
             {
-                for(j; j < this->board[i].size(); j++)
+                for(j = 0; j < this->board[i].size(); j++)
                 {
                     if(board[i][j] == number)
                     {
@@ -46,8 +46,6 @@ class BingoBoard
                 {
                     break;
                 }
-                // Have to reset the j iterator manually;
-                j = 0;
             }
             // Don't check for bingo if number not found
             if(!breakValue)
@@ -140,7 +138,6 @@ int main(int argc, char** argv)
     vector<BingoBoard*> boardList = vector<BingoBoard*>();
     vector<vector<int>> tempBoard = vector<vector<int>>();
     vector<vector<bool>> tempUsed = vector<vector<bool>>();
-    BingoBoard *board;
     while(getline(inputFile, line))
     {
         if(line == "" || line == "\n" || line == " ")
