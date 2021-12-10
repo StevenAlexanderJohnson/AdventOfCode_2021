@@ -5,6 +5,7 @@
 
 using namespace std;
 
+// Class to handle the line segments
 class LineSegment
 {
     public:
@@ -38,6 +39,7 @@ class LineSegment
             this->yIntercept = this->y1 - (this->x1 * this->slope);
         }
 
+        // In Part 1 we only care about horizontal and vertical lines
         void Add_Line_To_Map(vector<vector<int>> &map)
         {
             if(this->x1 == this->x2)
@@ -87,6 +89,7 @@ int main(int argc, char** argv)
         return 1;
     }
 
+    // Open file
     fstream inputFile;
     inputFile.open(argv[1], ios::in);
     if(!inputFile.is_open())
@@ -127,6 +130,7 @@ int main(int argc, char** argv)
             string coordinateValue;
             while(getline(breakCoordinates, coordinateValue, ','))
             {
+                // Determines where the value should be assigned
                 if(coordinateBreakCounter == 0 && lineBreakCounter == 0)
                 {
                     temp->x1 = stoi(coordinateValue);
@@ -160,6 +164,7 @@ int main(int argc, char** argv)
                         largestValue = temp->y2;
                     }
                 }
+                // Increment coordinate break counter keeping value between 0 and 1
                 coordinateBreakCounter = (coordinateBreakCounter + 1) % 2;
             }
             // Increment line break counter keeping value between 0 and 2
@@ -171,6 +176,7 @@ int main(int argc, char** argv)
         temp = new LineSegment();
     }
 
+    // Add zeros to the grid the lines will be plotted on
     for(int i = 0 ; i <= largestValue; i++)
     {
         vector<int> tempRow = vector<int>();
@@ -181,12 +187,14 @@ int main(int argc, char** argv)
         map.push_back(tempRow);
     }
 
+    // For each line segment, plot it on the map
     for(vector<LineSegment*>::iterator iterator = lineSegments.begin(); iterator != lineSegments.end(); iterator++)
     {
         (*iterator)->Add_Line_To_Map(map);
     }
 
     int count = 0;
+    // Add all the values in the map
     for(vector<int> row : map)
     {
         for(int value : row)
@@ -195,12 +203,12 @@ int main(int argc, char** argv)
             {
                 count++;
             }
-            // cout << value << " ";
         }
-        // cout << endl;
     }
     
+    // Print the output
     cout << count << endl;
+
     // Free the line segments that you created.
     for(LineSegment* lineSeg : lineSegments)
     {

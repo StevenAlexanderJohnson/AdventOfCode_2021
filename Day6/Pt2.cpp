@@ -7,6 +7,7 @@
 
 using namespace std;
 
+// This class in Pt2 handles populations of similar fish, not individual fish
 class LanturnFish
 {
     public:
@@ -44,6 +45,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    // Open file
     fstream inputFile;
     inputFile.open(argv[1]);
     if(!inputFile.is_open())
@@ -54,17 +56,22 @@ int main(int argc, char *argv[])
 
     vector<LanturnFish*> fishPopulation = vector<LanturnFish*>();
     // Change the '8' value to whatever day offset you want for reproduction
+    // Initialize population handlers for each day from 0 to 6
     for(int i = 0; i < 7; i++)
     {
         fishPopulation.push_back(new LanturnFish(i));
     }
+
+    // Read file
     string fileLine;
     while(getline(inputFile, fileLine))
     {
+        // Split string on comma
         string word;
         stringstream words(fileLine);
         while(getline(words, word, ','))
         {
+            // Add fish to the correct population
             fishPopulation[stoi(word)]->fishCount++;
         }
     }
@@ -104,6 +111,7 @@ int main(int argc, char *argv[])
                 {
                     if(fishPopulation[i]->timer == 6)
                     {
+                        // Add the population count of the new fish to the population of the old fish
                         fishPopulation[i]->fishCount += fishSpawn[0].fishCount;
                         fishSpawn.erase(fishSpawn.begin());
                         break;
@@ -111,12 +119,14 @@ int main(int argc, char *argv[])
                 }
             }
         }
+        // If there is a new fish population add it to the fishSpawn vector
         if(newFishPopulation != 0)
         {
             fishSpawn.push_back(LanturnFish(8, newFishPopulation));
         }
     }
 
+    // Count the number of fish
     unsigned long output = 0;
     for(size_t i = 0; i < fishPopulation.size(); i++)
     {
@@ -126,6 +136,8 @@ int main(int argc, char *argv[])
     {
         output += fishSpawn[i].fishCount;
     }
+    
+    // Print the number of fish
     cout << output << endl;
 
     // Free memory

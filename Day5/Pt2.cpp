@@ -6,6 +6,7 @@
 
 using namespace std;
 
+// Same as Pt1 but now we care about diagonal lines
 class LineSegment
 {
     public:
@@ -26,6 +27,7 @@ class LineSegment
             this->yIntercept = 0;
         }
 
+        // Get slope and y-intercept
         void Calculate_Line()
         {
             if(this->x1 != this->x2)
@@ -59,6 +61,7 @@ class LineSegment
                     }
                 }
             }
+            // Else find the starting and ending position, then plot using y = mx + b
             else
             {
                 int startX;
