@@ -213,16 +213,13 @@ int main(int argc, char *argv[])
 		}
 	}
 	
+	int index = 0;
 	for(unsigned long i : outputValues)
 	{
-		cout << i << endl;
+		cout << index << " : " << i << endl;
+		index++;
 	}
-	
+	cout << endl << outputValues.size()/2 << endl;
 	cout << endl << outputValues[outputValues.size()/2] << endl;
-	// If the stack still has values free them
-	if(!stack.Is_Empty())
-	{
-		stack.Free_Memory();
-	}
 	return 0;
 }
